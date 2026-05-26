@@ -1,0 +1,83 @@
+# Tooltips
+nei.tooltip.config=Config
+nei.tooltip.show.all.recipes=Show All Recipes
+nei.tooltip.transfer=Move Items
+nei.tooltip.transfer.shift=§7Shift-Click to move as many as possible
+nei.tooltip.delete.item=Click to Delete
+nei.tooltip.liquid.amount.with.capacity=%,d / %,d mB
+nei.tooltip.liquid.amount=%,d mB
+
+# Error Tooltips
+nei.tooltip.error.recipe.transfer.missing=Missing Items
+nei.tooltip.error.recipe.transfer.inventory.full=Inventory is too full
+nei.tooltip.error.recipe.transfer.no.server=The server must have Nearly Enough Items installed.
+nei.tooltip.error.recipe.transfer.too.large.player.inventory=Recipe is too large to craft in the 2x2 player crafting grid.
+
+# Error Messages
+nei.chat.error.command.too.long=NEI must be on the server to handle this Chat Command, it is too long for Minecraft to send.
+
+# Key Bindings
+key.nei.toggleOverlay=Toggle Item List Overlay (Ctrl + )
+key.nei.showRecipe=Show Item Recipe
+key.nei.showUses=Show Item Uses
+
+# Config
+config.nei.default=Default
+config.nei.valid=Valid
+
+config.nei.title=%MODNAME Config
+
+config.nei.mode=Mode
+config.nei.mode.comment=Change the mode that NEI is operating in.
+config.nei.mode.cheatItemsEnabled=Item Cheating
+config.nei.mode.cheatItemsEnabled.comment=/give items instead of showing the recipe.
+config.nei.mode.editEnabled=Item List Edit Mode
+config.nei.mode.editEnabled.comment=Hide and unhide items by clicking them in the item list.
+
+config.nei.interface=Interface
+config.nei.interface.comment=Options relating to the User Interface.
+config.nei.interface.recipeAnimationsEnabled=Recipe Animations
+config.nei.interface.recipeAnimationsEnabled.comment=Show recipe animations (furnace fire, progress bars, etc)
+
+config.nei.search=Search
+config.nei.search.comment=Options relating to the search bar.
+config.nei.search.atPrefixRequiredForModName=Use @ for Mod Name
+config.nei.search.atPrefixRequiredForModName.comment=Require "@ModName" to search by mod name instead of "ModName".
+
+config.nei.advanced=Advanced
+config.nei.advanced.comment=Advanced config options to change the way NEI functions.
+config.nei.advanced.nbtKeyIgnoreList=NBT Key Ignore List
+config.nei.advanced.nbtKeyIgnoreList.comment=List of NBT Keys that should be ignored when retrieving recipes.
+config.nei.advanced.itemBlacklist=Item Blacklist
+config.nei.advanced.itemBlacklist.comment=List of items that should not be displayed in the item list. Format: modId:name[:meta]. Edit Mode will automatically add or remove entries here.
+config.nei.advanced.hideMissingModelsEnabled=Hide Missing Item Models
+config.nei.advanced.hideMissingModelsEnabled.comment=Items with missing models will be hidden from the item list.
+config.nei.advanced.debugModeEnabled=Debug Mode
+config.nei.advanced.debugModeEnabled.comment=Adds random things to help with NEI development.
+config.nei.advanced.deleteItemsInCheatModeEnabled=Delete Items in Cheat Mode
+config.nei.advanced.deleteItemsInCheatModeEnabled.comment=In cheat mode, drag an ItemStack over the item list and click to delete it. (requires NEI on server)
+
+config.nei.addons=Addons
+config.nei.addons.comment=Category for NEI addon config options.
+
+# Edit Mode
+gui.nei.editMode.description=NEI Item List Edit Mode:
+gui.nei.editMode.description.hide=Ctrl-click to hide.
+gui.nei.editMode.description.show=Hidden. Ctrl-click to show.
+gui.nei.editMode.description.hide.wild=Ctrl-right-click to hide with wildcard.
+gui.nei.editMode.description.show.wild=Hidden by Wildcard. Ctrl-right-click to show.
+
+# Recipe Categories
+gui.nei.category.craftingTable=Crafting Table
+gui.nei.category.smelting=Smelting
+gui.nei.category.smelting.experience=%s Exp.
+gui.nei.category.fuel=Fuel
+gui.nei.category.fuel.burnTime=Burn Time: %s
+gui.nei.category.brewing=Brewing
+gui.nei.category.brewing.steps=Steps: %s
+gui.nei.category.itemDescription=Description
+
+# DEBUG (for debug mode, do not need translation)
+description.nei.wooden.door.1=Wooden Doors allow you to block monsters from entering your building.\nTesting sentences.
+description.nei.wooden.door.2=Clicking on a door changes its state from open to closed and visa versa.
+description.nei.wooden.door.3=Wooden Doors can be opened/closed via Redstone Circuits.

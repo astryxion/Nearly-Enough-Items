@@ -1,0 +1,16 @@
+[
+{
+  "modid": "NEI",
+  "name": "Nearly Enough Items",
+  "description": "Simple recipe and item helper.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "https://github.com/astryxion/Nearly-Enough-Items",
+  "updateUrl": "",
+  "authorList": ["Astryxion"],
+  "credits": "Astryxion, mezz",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]

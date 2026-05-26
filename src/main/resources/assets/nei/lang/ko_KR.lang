@@ -1,0 +1,8 @@
+# Key Bindings
+key.nei.toggleOverlay=토글 아이템목록 오버레이
+key.nei.showRecipe=아이템 레시피 보이기
+key.nei.showUses=아이템 사용 보이기
+
+# Config
+config.nei.mode.cheatItemsEnabled=치트 활성화
+config.nei.mode.cheatItemsEnabled.comment=/give items 자체 레시피 제작

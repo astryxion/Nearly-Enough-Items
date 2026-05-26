@@ -1,0 +1,105 @@
+buildscript {
+	repositories {
+		mavenCentral()
+		maven {
+			name = "forge"
+			url = "https://maven.minecraftforge.net/"
+		}
+	}
+	dependencies {
+		classpath('com.anatawa12.forge:ForgeGradle:1.2-1.1.+') {
+			changing = true
+		}
+	}
+}
+
+apply plugin: 'forge'
+
+version = mcversion + '-' + version_major + '.' + version_minor + '.' + version_patch
+group = "astryxion.nei"
+archivesBaseName = "nei"
+
+if (System.getenv().BUILD_NUMBER != null) {
+	version += ".${System.getenv().BUILD_NUMBER}"
+}
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+tasks.withType(JavaCompile) {
+	options.compilerArgs << '-Xmaxerrs' << '10000'
+	options.encoding = "UTF-8"
+}
+
+minecraft {
+	version = mcversion + "-" + forgeversion
+	runDir = "run"
+	mappings = "stable_12"
+	replaceIn "astryxion/nei/config/Constants.java"
+	replace "@VERSION@": project.version
+}
+
+repositories {
+
+}
+
+dependencies {
+
+}
+
+processResources {
+	inputs.property "version", project.version
+	inputs.property "mcversion", project.minecraft.version
+
+	from(sourceSets.main.resources.srcDirs) {
+		include 'mcmod.info'
+		expand 'version': project.version, 'mcversion': project.minecraft.version
+	}
+
+	from(sourceSets.main.resources.srcDirs) {
+		exclude 'mcmod.info'
+	}
+
+	rename '(.+_at.cfg)', 'META-INF/$1'
+}
+
+allprojects {
+	tasks.withType(Javadoc) {
+		options.addStringOption('Xdoclint:none', '-quiet')
+	}
+}
+
+jar {
+	manifest {
+		attributes 'FMLAT': 'nei_at.cfg'
+	}
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+	from javadoc.destinationDir
+	classifier = 'javadoc'
+}
+
+task sourcesJar(type: Jar) {
+	from sourceSets.main.allJava
+	classifier = 'sources'
+}
+
+artifacts {
+	archives javadocJar
+	archives sourcesJar
+}
+
+task("uploadJars", dependsOn: "build") {
+	description = "uploads JARs"
+	if (project.hasProperty("local_maven")) {
+		apply plugin: 'maven'
+		uploadArchives {
+			repositories {
+				mavenDeployer {
+					repository(url: "file://${local_maven}")
+				}
+			}
+		}
+	}
+}

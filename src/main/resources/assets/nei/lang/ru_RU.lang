@@ -1,0 +1,79 @@
+# Tooltips
+nei.tooltip.config=Конфигурация
+nei.tooltip.show.all.recipes=Показать все рецепты
+nei.tooltip.delete.item=Нажмите, чтобы удалить
+nei.tooltip.liquid.amount.with.capacity=%,d / %,d мВ
+nei.tooltip.liquid.amount=%,d мВ
+
+# Error Tooltips
+nei.tooltip.error.recipe.transfer.missing=Отсутствуют предметы
+nei.tooltip.error.recipe.transfer.inventory.full=Инвентарь заполнен
+
+# Error Messages
+nei.chat.error.command.too.long=NEI необходимо установить на сервер, чтобы использовать эту команду, она слишком длинна для отправки.
+
+# Key Bindings
+key.nei.toggleOverlay=Переключить оверлей предметов (Ctrl + )
+key.nei.showRecipe=Показывать рецепты предметов
+key.nei.showUses=Показывать применения предметов
+
+# Config
+config.nei.default=По-умолчанию
+config.nei.valid=Valid
+
+config.nei.title=Конфигурация %MODNAME
+
+config.nei.mode=Режим
+config.nei.mode.comment=Изменение режима NEI.
+config.nei.mode.cheatItemsEnabled=Режим жульничества
+config.nei.mode.cheatItemsEnabled.comment=Давать предметы вместо отображения рецепта.
+config.nei.mode.editEnabled=Режим редактирования
+config.nei.mode.editEnabled.comment=Прячьте предметы в списке простым нажатием клавиши.
+
+config.nei.interface=Интерфейс
+config.nei.interface.comment=Настройки, отвечающие за интерфейс пользователя.
+config.nei.interface.recipeAnimationsEnabled=Анимации рецептов
+config.nei.interface.recipeAnimationsEnabled.comment=Показывать анимации рецептов (огонь в печи, индикаторы и т.д)
+
+config.nei.search=Поиск
+config.nei.search.comment=Настройки, отвечающие за поиск.
+config.nei.search.atPrefixRequiredForModName=Использовать @ для имени мода
+config.nei.search.atPrefixRequiredForModName.comment=Требовать "@ИмяМода" для поиска по имени модификации вместо просто "ИмяМода".
+
+config.nei.advanced=Продвинутое
+config.nei.advanced.comment=Продвинутые настройки функций NEI.
+config.nei.advanced.nbtKeyIgnoreList=Чёрный список для NBT
+config.nei.advanced.nbtKeyIgnoreList.comment=Список NBT, которые будут игнорироваться при отображении рецептов.
+config.nei.advanced.itemBlacklist=Чёрный список для предметов
+config.nei.advanced.itemBlacklist.comment=Список предметов, которые не будут отображаться в списке предметов NEI. Формат: modId:name[:meta]. Режим редактирования будет автоматически добавлять записи сюда, или удалять.
+config.nei.advanced.hideMissingModelsEnabled=Скрывать предметы без моделей
+config.nei.advanced.hideMissingModelsEnabled.comment=Предметы без моделей будут скрыты.
+config.nei.advanced.debugModeEnabled=Режим отладки
+config.nei.advanced.debugModeEnabled.comment=Добавляет разные вещи, чтобы помочь в разработке NEI.
+config.nei.advanced.deleteItemsInCheatModeEnabled=Удаление предметов в режиме жульничества
+config.nei.advanced.deleteItemsInCheatModeEnabled.comment=В режиме жульничества, перенесите предмет из списка и нажмите, чтобы удалить его. (NEI требуется на сервере)
+
+config.nei.addons=Дополнения
+config.nei.addons.comment=Категория для настроек дополнений NEI.
+
+# Edit Mode
+gui.nei.editMode.description=Режим редактирования списка предметов NEI:
+gui.nei.editMode.description.hide=Ctrl+ЛКМ, чтобы спрятать.
+gui.nei.editMode.description.show=Спрятано. Ctrl+ЛКМ, чтобы показать.
+gui.nei.editMode.description.hide.wild=Ctrl-right-click to hide with wildcard.
+gui.nei.editMode.description.show.wild=Hidden by Wildcard. Ctrl-right-click to show.
+
+# Recipes
+gui.nei.category.craftingTable=Верстак
+gui.nei.category.smelting=Плавка
+gui.nei.category.smelting.experience=Опыт: %s
+gui.nei.category.fuel=Топливо
+gui.nei.category.fuel.burnTime=Время горения: %s
+gui.nei.category.brewing=Варка
+gui.nei.category.brewing.steps=Шаги: %s
+gui.nei.category.itemDescription=Описание
+
+# DEBUG (for debug mode, do not need translation)
+description.nei.wooden.door.1=Wooden Doors allow you to block monsters from entering your building.\nTesting sentences.
+description.nei.wooden.door.2=Clicking on a door changes its state from open to closed and visa versa.
+description.nei.wooden.door.3=Wooden Doors can be opened/closed via Redstone Circuits.

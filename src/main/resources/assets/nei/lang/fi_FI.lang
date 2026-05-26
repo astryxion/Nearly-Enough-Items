@@ -1,0 +1,71 @@
+# Tooltips
+nei.tooltip.config=Asetukset
+nei.tooltip.show.all.recipes=Näytä kaikki reseptit
+nei.tooltip.delete.item=Paina poistaaksesi
+
+# Error Tooltips
+nei.tooltip.error.recipe.transfer.missing=Puuttuvat tavarat
+nei.tooltip.error.recipe.transfer.inventory.full=Tavaraluettelo on liian täynnä
+
+# Error Messages
+nei.chat.error.command.too.long=NEI:n täytyy olla asennettuna palvelimella, komento on liian pitkä Minecraftille.
+# Key Bindings
+key.nei.toggleOverlay=Näytä tavaralista (Ctrl + )
+key.nei.showRecipe=Näytä tavaran resepti
+key.nei.showUses=Näytä tavaran käytöt
+
+# Config
+config.nei.default=Oletus
+config.nei.valid=Virheetön
+
+config.nei.title=%MODNAME-asetukset
+
+config.nei.mode=Tila
+config.nei.mode.comment=Vaihda tilaa, jossa NEI toimii.
+config.nei.mode.cheatItemsEnabled=Tavaroiden huijaus
+config.nei.mode.cheatItemsEnabled.comment=Anna tavaroita /give-komennolla reseptin näyttämisen sijaan.
+config.nei.mode.editEnabled=Tavaralistan muokkaustila
+config.nei.mode.editEnabled.comment=Piilota ja näytä tavaroita painamalla niitä tavaralistassa.
+
+config.nei.interface=Käyttöliittymä
+config.nei.interface.comment=Käyttöliittymään liittyviä asetuksia.
+config.nei.interface.recipeAnimationsEnabled=Reseptien animaatiot
+config.nei.interface.recipeAnimationsEnabled.comment=Näytä reseptien animaatiot (uunin tuli, edistymispalkki jne.)
+
+config.nei.search=Haku
+config.nei.search.comment=Hakuun liittyviä asetuksia.
+config.nei.search.atPrefixRequiredForModName=Käytä @-merkkiä modihakua varten
+config.nei.search.atPrefixRequiredForModName.comment=Vaadi "@ModinNimi" hakeaksesi modin nimellä pelkän "ModinNimi" sijaan.
+
+config.nei.advanced=Edistynyt
+config.nei.advanced.comment=Edistyneitä asetuksia jotka muokkaavat NEI:n toimintaa.
+config.nei.advanced.nbtKeyIgnoreList=NBT-avaimien sivuutuslista
+config.nei.advanced.nbtKeyIgnoreList.comment=Lista NBT-avaimista jotka pitäisi sivuuttaa reseptejä noutaessa.
+config.nei.advanced.itemBlacklist=Tavaroiden musta lista
+config.nei.advanced.itemBlacklist.comment=Lista tavaroista joita ei pitäisi näyttää NEI:n tavaralistassa. Muoto: modinId:nimi[:metadata]. Muokkaustila lisää tai poistaa merkintöjä tästä.
+config.nei.advanced.hideMissingModelsEnabled=Piilota puuttuvat tavaramallit
+config.nei.advanced.hideMissingModelsEnabled.comment=Tavarat joilta puuttuvat mallit poistetaan tavaralistasta.
+config.nei.advanced.debugModeEnabled=Debug-tila
+config.nei.advanced.debugModeEnabled.comment=Lisää muutamia asioita jotka auttavat NEI:n kehitystä.
+config.nei.advanced.deleteItemsInCheatModeEnabled=Poista tavaroita huijaustilassa
+config.nei.advanced.deleteItemsInCheatModeEnabled.comment=Huijaustilassa, vedä tavarapino tavaralistan päälle ja paina tuhotaksesi sen. (tarvii NEI:n palvelimella)
+
+config.nei.addons=Lisäosat
+config.nei.addons.comment=Kategoria NEI:n lisäosa-asetuksille.
+
+# Edit Mode
+gui.nei.editMode.description=NEI:n tavaralistan muokkaustila:
+gui.nei.editMode.description.hide=Paina Ctrl pohjassa piilottaaksesi.
+gui.nei.editMode.description.show=Piilossa. Paina Ctrl pohjassa näyttääksesi.
+gui.nei.editMode.description.hide.wild=Paina hiiren oikeaa painiketta Ctrl pohjassa piilottaaksesi jokerimerkin perusteella.
+gui.nei.editMode.description.show.wild=Piilotettu jokerimerkin perusteella. Näytä painamalla hiiren oikeaa painiketta Ctrl pohjassa.
+
+# Recipe Categories
+gui.nei.category.craftingTable=Työpöytä
+gui.nei.category.smelting=Sulatus
+gui.nei.category.smelting.experience=%s kokemuspistettä
+gui.nei.category.fuel=Polttoaine
+gui.nei.category.fuel.burnTime=Paloaika: %s
+gui.nei.category.brewing=Haudutus
+gui.nei.category.brewing.steps=Vaiheita: %s
+gui.nei.category.itemDescription=Kuvaus
