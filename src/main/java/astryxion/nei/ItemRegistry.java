@@ -153,8 +153,17 @@ public class ItemRegistry implements IItemRegistry {
 
 		List<ItemStack> subItems = new ArrayList<>();
 		for (CreativeTabs itemTab : item.getCreativeTabs()) {
+			if (itemTab == null) {
+				continue;
+			}
 			subItems.clear();
-			block.getSubBlocks(item, itemTab, subItems);
+			try {
+				block.getSubBlocks(item, itemTab, subItems);
+			} catch (RuntimeException e) {
+				Log.error("Failed to get sub blocks for block: {}", block.getUnlocalizedName(), e);
+			} catch (LinkageError e) {
+				Log.error("Failed to get sub blocks for block: {}", block.getUnlocalizedName(), e);
+			}
 			addItemStacks(subItems, itemList, fuels);
 
 			if (subItems.isEmpty()) {

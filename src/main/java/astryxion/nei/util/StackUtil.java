@@ -174,8 +174,17 @@ public class StackUtil {
 
 		List<ItemStack> subItems = new ArrayList<>();
 		for (CreativeTabs itemTab : item.getCreativeTabs()) {
+			if (itemTab == null) {
+				continue;
+			}
 			subItems.clear();
-			item.getSubItems(item, itemTab, subItems);
+			try {
+				item.getSubItems(item, itemTab, subItems);
+			} catch (RuntimeException e) {
+				Log.error("Failed to get sub items for item: {}", item.getUnlocalizedName(), e);
+			} catch (LinkageError e) {
+				Log.error("Failed to get sub items for item: {}", item.getUnlocalizedName(), e);
+			}
 			itemStacks.addAll(subItems);
 		}
 
