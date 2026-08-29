@@ -93,6 +93,9 @@ public class ItemFilter {
 			if (itemStackChecker.isItemStackHidden(itemStack)) {
 				continue;
 			}
+			if (!codechicken.nei.ItemList.itemMatches(itemStack)) {
+				continue;
+			}
 
 			ItemStackElement itemStackElement = ItemStackElement.create(itemStack);
 			if (itemStackElement != null) {

@@ -10,11 +10,11 @@ nei.tooltip.liquid.amount=%,d mB
 # Error Tooltips
 nei.tooltip.error.recipe.transfer.missing=Missing Items
 nei.tooltip.error.recipe.transfer.inventory.full=Inventory is too full
-nei.tooltip.error.recipe.transfer.no.server=The server must have Nearly Enough Items installed.
+nei.tooltip.error.recipe.transfer.no.server=The server must have JEI (Legacy) installed.
 nei.tooltip.error.recipe.transfer.too.large.player.inventory=Recipe is too large to craft in the 2x2 player crafting grid.
 
 # Error Messages
-nei.chat.error.command.too.long=NEI must be on the server to handle this Chat Command, it is too long for Minecraft to send.
+nei.chat.error.command.too.long=JEI (Legacy) must be on the server to handle this Chat Command, it is too long for Minecraft to send.
 
 # Key Bindings
 key.nei.toggleOverlay=Toggle Item List Overlay (Ctrl + )
@@ -38,6 +38,8 @@ config.nei.interface=Interface
 config.nei.interface.comment=Options relating to the User Interface.
 config.nei.interface.recipeAnimationsEnabled=Recipe Animations
 config.nei.interface.recipeAnimationsEnabled.comment=Show recipe animations (furnace fire, progress bars, etc)
+config.nei.interface.centerSearchBarEnabled=Center Search Bar
+config.nei.interface.centerSearchBarEnabled.comment=Move the search bar to the bottom center of the screen. Requires enough space below the inventory GUI.
 
 config.nei.search=Search
 config.nei.search.comment=Options relating to the search bar.

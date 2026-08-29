@@ -87,6 +87,10 @@ public class InputHandler {
 		return handled;
 	}
 
+	public boolean captureMousePress(int mouseButton, int mouseX, int mouseY) {
+		return onMouseClicked(mouseButton, mouseX, mouseY) || shouldBlockInventoryMouseInput(mouseX, mouseY);
+	}
+
 	public void onMouseReleased(int mouseButton) {
 		if (clickHandled) {
 			clickHandled = false;

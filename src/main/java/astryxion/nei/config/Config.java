@@ -33,6 +33,7 @@ public class Config {
 	private static boolean hideMissingModelsEnabled = true;
 
 	private static boolean atPrefixRequiredForModName = true;
+	private static boolean centerSearchBarEnabled = false;
 
 	private static final Set<String> nbtKeyIgnoreList = new HashSet<>();
 	private static final Set<String> itemBlacklist = new HashSet<>();
@@ -80,6 +81,10 @@ public class Config {
 		return atPrefixRequiredForModName;
 	}
 
+	public static boolean isCenterSearchBarEnabled() {
+		return centerSearchBarEnabled;
+	}
+
 	public static Set<String> getNbtKeyIgnoreList() {
 		return nbtKeyIgnoreList;
 	}
@@ -113,6 +118,7 @@ public class Config {
 		recipeAnimationsEnabled = configFile.getBoolean(CATEGORY_INTERFACE, "recipeAnimationsEnabled", recipeAnimationsEnabled);
 
 		atPrefixRequiredForModName = configFile.getBoolean(CATEGORY_SEARCH, "atPrefixRequiredForModName", atPrefixRequiredForModName);
+		centerSearchBarEnabled = configFile.getBoolean(CATEGORY_INTERFACE, "centerSearchBarEnabled", centerSearchBarEnabled);
 
 		String[] nbtKeyIgnoreListArray = configFile.getStringList("nbtKeyIgnoreList", CATEGORY_ADVANCED, defaultNbtKeyIgnoreList);
 		nbtKeyIgnoreList.clear();

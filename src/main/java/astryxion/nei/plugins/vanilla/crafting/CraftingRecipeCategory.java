@@ -80,7 +80,11 @@ public class CraftingRecipeCategory implements IRecipeCategory {
 
 		if (recipeWrapper instanceof IShapedCraftingRecipeWrapper) {
 			IShapedCraftingRecipeWrapper wrapper = (IShapedCraftingRecipeWrapper) recipeWrapper;
-			craftingGridHelper.setInput(guiItemStacks, wrapper.getInputs(), wrapper.getWidth(), wrapper.getHeight());
+			if (wrapper.getWidth() > 0 && wrapper.getHeight() > 0) {
+				craftingGridHelper.setInput(guiItemStacks, wrapper.getInputs(), wrapper.getWidth(), wrapper.getHeight());
+			} else {
+				craftingGridHelper.setInput(guiItemStacks, wrapper.getInputs());
+			}
 			craftingGridHelper.setOutput(guiItemStacks, wrapper.getOutputs());
 		} else if (recipeWrapper instanceof ICraftingRecipeWrapper) {
 			ICraftingRecipeWrapper wrapper = (ICraftingRecipeWrapper) recipeWrapper;

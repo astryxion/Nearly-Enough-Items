@@ -17,6 +17,7 @@ import cpw.mods.fml.common.event.FMLInterModComms;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.relauncher.Side;
 
 import astryxion.nei.api.IModPlugin;
@@ -29,6 +30,11 @@ import astryxion.nei.network.packets.PacketNEI;
 import astryxion.nei.util.AnnotatedInstanceUtil;
 import astryxion.nei.util.Log;
 import astryxion.nei.util.ModRegistry;
+import astryxion.nei.discovery.DiscoveryReport;
+import codechicken.nei.ItemList;
+import codechicken.nei.LayoutManager;
+import codechicken.nei.bridge.NeiPluginLoader;
+import codechicken.nei.bridge.NeiRecipeBridge;
 
 public class ProxyCommonClient extends ProxyCommon {
 	private static boolean started = false;
@@ -36,6 +42,8 @@ public class ProxyCommonClient extends ProxyCommon {
 	private ItemFilter itemFilter;
 	private GuiEventHandler guiEventHandler;
 	private List<IModPlugin> plugins;
+	private volatile boolean neiPluginsPending;
+	private boolean neiPluginsStarted;
 
 	private static void initVersionChecker() {
 		final NBTTagCompound compound = new NBTTagCompound();
@@ -48,6 +56,7 @@ public class ProxyCommonClient extends ProxyCommon {
 	public void preInit(@Nonnull FMLPreInitializationEvent event) {
 		Config.preInit(event);
 		initVersionChecker();
+		NeiPluginLoader.captureAsm(event);
 
 		ASMDataTable asmDataTable = event.getAsmData();
 		this.plugins = AnnotatedInstanceUtil.getModPlugins(asmDataTable);
@@ -96,9 +105,31 @@ public class ProxyCommonClient extends ProxyCommon {
 			return;
 		}
 
+		try {
+			startNEIUnchecked();
+		} catch (Throwable t) {
+			started = false;
+			Log.error("JEI failed to start; world load will continue", t);
+		}
+	}
+
+	private void startNEIUnchecked() {
 		started = true;
+		DiscoveryReport.setLast(new DiscoveryReport());
+
+		try {
+			Minecraft mc = Minecraft.getMinecraft();
+			if (mc != null) {
+				codechicken.lib.gui.GuiDraw.fontRenderer = mc.fontRendererObj;
+			}
+		} catch (Throwable ignored) {
+			// Real CodeChickenLib may already own GuiDraw; fontRenderer is optional.
+		}
+
 		ItemRegistry itemRegistry = new ItemRegistry();
 		Internal.setItemRegistry(itemRegistry);
+		ItemList.populateFrom(itemRegistry.getItemList());
+		LayoutManager.itemsLoaded = true;
 
 		Iterator<IModPlugin> iterator = plugins.iterator();
 		while (iterator.hasNext()) {
@@ -146,6 +177,64 @@ public class ProxyCommonClient extends ProxyCommon {
 		itemFilter = new ItemFilter(itemRegistry);
 		ItemListOverlay itemListOverlay = new ItemListOverlay(itemFilter);
 		guiEventHandler.setItemListOverlay(itemListOverlay);
+
+		DiscoveryReport.getLast().logToConsole();
+		Log.info("JEI overlay ready; loading NEI addons in the background");
+		startNeiPluginsAsync();
+	}
+
+	private void startNeiPluginsAsync() {
+		if (neiPluginsStarted) {
+			return;
+		}
+		neiPluginsStarted = true;
+		Thread thread = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					LayoutManager.suppressItemListSync = true;
+					NeiRecipeBridge.setDeferIndexing(true);
+					NeiPluginLoader.load();
+				} catch (Throwable t) {
+					Log.error("NEI addon load failed", t);
+				} finally {
+					LayoutManager.suppressItemListSync = false;
+					neiPluginsPending = true;
+				}
+			}
+		}, "JEI-NEI-Plugins");
+		thread.setDaemon(true);
+		thread.start();
+	}
+
+	private void applyLoadedNeiPlugins() {
+		NeiRecipeBridge.setDeferIndexing(false);
+		ItemRegistry itemRegistry = Internal.getItemRegistry();
+		if (itemRegistry != null) {
+			itemRegistry.rebuild();
+			ItemList.populateFrom(itemRegistry.getItemList());
+			LayoutManager.itemsLoaded = true;
+		}
+		resetItemFilter();
+		Log.info("Indexing NEI addon recipes");
+		NeiRecipeBridge.flushPending();
+		Log.info("NEI addon recipes indexed");
+	}
+
+	@SubscribeEvent
+	public void onClientTickApplyPlugins(TickEvent.ClientTickEvent event) {
+		if (event.phase != TickEvent.Phase.END) {
+			return;
+		}
+		if (!neiPluginsPending) {
+			return;
+		}
+		neiPluginsPending = false;
+		try {
+			applyLoadedNeiPlugins();
+		} catch (Throwable t) {
+			Log.error("Failed to apply NEI addon recipes", t);
+		}
 	}
 
 	@Override

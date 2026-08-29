@@ -61,20 +61,27 @@ public class Focus {
 
 	@Nullable
 	private static Fluid getFluidFromItemStack(ItemStack stack) {
-		Item item = stack.getItem();
-		if (item instanceof IFluidContainerItem) {
-			IFluidContainerItem fluidContainerItem = (IFluidContainerItem) item;
-			FluidStack fluidStack = fluidContainerItem.getFluid(stack);
-			return fluidStack.getFluid();
-		} else if (FluidContainerRegistry.isFilledContainer(stack)) {
-			FluidStack fluidStack = FluidContainerRegistry.getFluidForFilledItem(stack);
-			return fluidStack.getFluid();
-		} else if (item instanceof ItemBlock) {
-			ItemBlock itemBlock = (ItemBlock) item;
-			Block block = itemBlock.blockInstance;
-			return FluidRegistry.lookupFluidForBlock(block);
+		if (stack == null) {
+			return null;
 		}
-
+		Item item = stack.getItem();
+		if (item == null) {
+			return null;
+		}
+		if (item instanceof IFluidContainerItem) {
+			FluidStack fluidStack = ((IFluidContainerItem) item).getFluid(stack);
+			return fluidStack == null ? null : fluidStack.getFluid();
+		}
+		if (FluidContainerRegistry.isFilledContainer(stack)) {
+			FluidStack fluidStack = FluidContainerRegistry.getFluidForFilledItem(stack);
+			return fluidStack == null ? null : fluidStack.getFluid();
+		}
+		if (item instanceof ItemBlock) {
+			Block block = ((ItemBlock) item).blockInstance;
+			if (block != null) {
+				return FluidRegistry.lookupFluidForBlock(block);
+			}
+		}
 		return null;
 	}
 

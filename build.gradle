@@ -17,7 +17,7 @@ apply plugin: 'forge'
 
 version = mcversion + '-' + version_major + '.' + version_minor + '.' + version_patch
 group = "astryxion.nei"
-archivesBaseName = "nei"
+archivesBaseName = "jei-legacy"
 
 if (System.getenv().BUILD_NUMBER != null) {
 	version += ".${System.getenv().BUILD_NUMBER}"

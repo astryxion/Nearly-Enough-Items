@@ -229,12 +229,31 @@ public class StackUtil {
 		} else if (input instanceof String) {
 			List<ItemStack> stacks = OreDictionary.getOres((String) input);
 			itemStackList.addAll(stacks);
+		} else if (input instanceof ItemStack[]) {
+			ItemStack[] stacks = (ItemStack[]) input;
+			for (int i = 0; i < stacks.length; i++) {
+				if (stacks[i] != null) {
+					itemStackList.add(stacks[i]);
+				}
+			}
+		} else if (input instanceof Object[]) {
+			Object[] objects = (Object[]) input;
+			for (int i = 0; i < objects.length; i++) {
+				toItemStackList(itemStackList, objects[i]);
+			}
+		} else if (input instanceof Item) {
+			itemStackList.addAll(astryxion.nei.discovery.IngredientExpander.expand(input));
+		} else if (input instanceof net.minecraft.block.Block) {
+			itemStackList.addAll(astryxion.nei.discovery.IngredientExpander.expand(input));
 		} else if (input instanceof Iterable) {
 			for (Object obj : (Iterable) input) {
 				toItemStackList(itemStackList, obj);
 			}
 		} else if (input != null) {
-			Log.error("Unknown object found: {}", input);
+			List<ItemStack> expanded = astryxion.nei.discovery.IngredientExpander.expand(input);
+			if (!expanded.isEmpty()) {
+				itemStackList.addAll(expanded);
+			}
 		}
 	}
 
@@ -247,15 +266,22 @@ public class StackUtil {
 	public static String getUniqueIdentifierForStack(@Nonnull ItemStack stack, boolean wildcard) {
 		Item item = stack.getItem();
 		if (item == null) {
-			throw new NullPointerException("Found an itemStack with a null item. This is an error from another mod.");
+			return "unknown:null";
 		}
 
-		GameRegistry.UniqueIdentifier uniqueIdentifier = GameRegistry.findUniqueIdentifierFor(item);
-		if (uniqueIdentifier == null) {
-			throw new NullPointerException("No name for item in item registry: " + item.getClass());
+		GameRegistry.UniqueIdentifier uniqueIdentifier = null;
+		try {
+			uniqueIdentifier = GameRegistry.findUniqueIdentifierFor(item);
+		} catch (Throwable ignored) {
+			// Forge UniqueIdentifier NPE when the item is not in GameData
 		}
-
-		String itemNameString = uniqueIdentifier.modId + ":" + uniqueIdentifier.name;
+		String itemNameString;
+		if (uniqueIdentifier != null) {
+			itemNameString = uniqueIdentifier.modId + ":" + uniqueIdentifier.name;
+		} else {
+			Object registryName = Item.itemRegistry.getNameForObject(item);
+			itemNameString = registryName != null ? registryName.toString() : "unknown:" + item.getClass().getName();
+		}
 		int metadata = stack.getMetadata();
 		if (wildcard || metadata == OreDictionary.WILDCARD_VALUE) {
 			return itemNameString;

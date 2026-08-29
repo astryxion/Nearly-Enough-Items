@@ -17,19 +17,18 @@ import astryxion.nei.api.recipe.VanillaRecipeCategoryUid;
 import astryxion.nei.api.recipe.transfer.IRecipeTransferRegistry;
 import astryxion.nei.plugins.vanilla.brewing.BrewingRecipeCategory;
 import astryxion.nei.plugins.vanilla.brewing.BrewingRecipeHandler;
-import astryxion.nei.plugins.vanilla.brewing.BrewingRecipeMaker;
+import astryxion.nei.discovery.DiscoveryReport;
+import astryxion.nei.discovery.RecipeDiscovery;
 import astryxion.nei.plugins.vanilla.crafting.CraftingRecipeCategory;
-import astryxion.nei.plugins.vanilla.crafting.CraftingRecipeMaker;
+import astryxion.nei.plugins.vanilla.crafting.GenericCraftingRecipeHandler;
 import astryxion.nei.plugins.vanilla.crafting.ShapedOreRecipeHandler;
 import astryxion.nei.plugins.vanilla.crafting.ShapedRecipesHandler;
 import astryxion.nei.plugins.vanilla.crafting.ShapelessOreRecipeHandler;
 import astryxion.nei.plugins.vanilla.crafting.ShapelessRecipesHandler;
 import astryxion.nei.plugins.vanilla.furnace.FuelRecipeHandler;
-import astryxion.nei.plugins.vanilla.furnace.FuelRecipeMaker;
 import astryxion.nei.plugins.vanilla.furnace.FurnaceFuelCategory;
 import astryxion.nei.plugins.vanilla.furnace.FurnaceSmeltingCategory;
 import astryxion.nei.plugins.vanilla.furnace.SmeltingRecipeHandler;
-import astryxion.nei.plugins.vanilla.furnace.SmeltingRecipeMaker;
 
 @NEIPlugin
 public class VanillaPlugin implements IModPlugin {
@@ -61,6 +60,7 @@ public class VanillaPlugin implements IModPlugin {
 				new ShapedRecipesHandler(),
 				new ShapelessOreRecipeHandler(),
 				new ShapelessRecipesHandler(),
+				new GenericCraftingRecipeHandler(),
 				new FuelRecipeHandler(),
 				new SmeltingRecipeHandler(),
 				new BrewingRecipeHandler()
@@ -74,10 +74,11 @@ public class VanillaPlugin implements IModPlugin {
 		recipeTransferRegistry.addRecipeTransferHandler(ContainerFurnace.class, VanillaRecipeCategoryUid.FUEL, 1, 1, 1, 36);
 		recipeTransferRegistry.addRecipeTransferHandler(ContainerBrewingStand.class, VanillaRecipeCategoryUid.BREWING, 0, 4, 4, 36);
 
-		registry.addRecipes(CraftingRecipeMaker.getCraftingRecipes());
-		registry.addRecipes(SmeltingRecipeMaker.getFurnaceRecipes());
-		registry.addRecipes(FuelRecipeMaker.getFuelRecipes(itemRegistry, guiHelper));
-		registry.addRecipes(BrewingRecipeMaker.getBrewingRecipes(itemRegistry));
+		DiscoveryReport report = DiscoveryReport.getLast();
+		registry.addRecipes(RecipeDiscovery.getCraftingRecipes(report));
+		registry.addRecipes(RecipeDiscovery.getSmeltingRecipes(report));
+		registry.addRecipes(RecipeDiscovery.getFuelRecipes(itemRegistry, guiHelper, report));
+		registry.addRecipes(RecipeDiscovery.getBrewingRecipes(itemRegistry, report));
 	}
 
 	@Override

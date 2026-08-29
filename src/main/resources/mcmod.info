@@ -1,16 +1,31 @@
 [
 {
   "modid": "NEI",
-  "name": "Nearly Enough Items",
-  "description": "Simple recipe and item helper.",
+  "name": "JEI (Legacy)",
+  "description": "Just Enough Items backported to Minecraft 1.7.10, with compatibility for the existing NEI addon ecosystem.",
   "version": "${version}",
   "mcversion": "${mcversion}",
   "url": "https://github.com/astryxion/Nearly-Enough-Items",
   "updateUrl": "",
   "authorList": ["Astryxion"],
-  "credits": "Astryxion, mezz",
+  "credits": "mezz, ChickenBones, mitchej123, Astryxion",
   "logoFile": "",
   "screenshots": [],
   "dependencies": []
+}
+,
+{
+  "modid": "NotEnoughItems",
+  "name": "Not Enough Items",
+  "description": "NEI API compatibility provided by JEI (Legacy).",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["Chicken_Bones", "mitchej123"],
+  "credits": "ChickenBones, mitchej123",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": ["NEI"]
 }
 ]

@@ -7,10 +7,10 @@ public class Constants {
 
 	// Mod info
 	public static final String MOD_ID = "NEI";
-	public static final String NAME = "Nearly Enough Items";
+	public static final String NAME = "JEI (Legacy)";
 	public static final String VERSION = "@VERSION@";
 	public static final String AUTHORS = "Astryxion";
-	public static final String CREDITS = "Astryxion, mezz";
+	public static final String CREDITS = "mezz, ChickenBones, mitchej123, Astryxion";
 	public static final String URL = "https://github.com/astryxion/Nearly-Enough-Items";
 
 	// Textures (unchanged from JEI — assets live under assets/nei/)

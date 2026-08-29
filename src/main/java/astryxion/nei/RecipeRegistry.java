@@ -33,20 +33,21 @@ import astryxion.nei.util.RecipeMap;
 import astryxion.nei.util.StackUtil;
 
 public class RecipeRegistry implements IRecipeRegistry {
-	private final ImmutableMap<Class, IRecipeHandler> recipeHandlers;
+	private final Map<Class, IRecipeHandler> recipeHandlers;
 	private final ImmutableTable<Class, String, IRecipeTransferHandler> recipeTransferHandlers;
-	private final ImmutableMap<String, IRecipeCategory> recipeCategoriesMap;
+	private final Map<String, IRecipeCategory> recipeCategoriesMap;
 	private final ListMultimap<IRecipeCategory, Object> recipesForCategories;
 	private final RecipeMap recipeInputMap;
 	private final RecipeMap recipeOutputMap;
 	private final Set<Class> unhandledRecipeClasses;
+	private final RecipeCategoryComparator recipeCategoryComparator;
 
 	public RecipeRegistry(@Nonnull List<IRecipeCategory> recipeCategories, @Nonnull List<IRecipeHandler> recipeHandlers, @Nonnull List<IRecipeTransferHandler> recipeTransferHandlers, @Nonnull List<Object> recipes) {
-		this.recipeCategoriesMap = buildRecipeCategoriesMap(recipeCategories);
+		this.recipeCategoriesMap = new HashMap<String, IRecipeCategory>(buildRecipeCategoriesMap(recipeCategories));
 		this.recipeTransferHandlers = buildRecipeTransferHandlerTable(recipeTransferHandlers);
-		this.recipeHandlers = buildRecipeHandlersMap(recipeHandlers);
+		this.recipeHandlers = new HashMap<Class, IRecipeHandler>(buildRecipeHandlersMap(recipeHandlers));
 
-		RecipeCategoryComparator recipeCategoryComparator = new RecipeCategoryComparator(recipeCategories);
+		this.recipeCategoryComparator = new RecipeCategoryComparator(recipeCategories);
 		this.recipeInputMap = new RecipeMap(recipeCategoryComparator);
 		this.recipeOutputMap = new RecipeMap(recipeCategoryComparator);
 
@@ -134,6 +135,67 @@ public class RecipeRegistry implements IRecipeRegistry {
 		} catch (RuntimeException e) {
 			String recipeInfo = getInfoFromBrokenRecipe(recipe, recipeHandler);
 			Log.error("Failed to add recipe: {}", recipeInfo, e);
+		}
+	}
+
+	/**
+	 * Adds a recipe to an already-registered category, used by the NEI bridge
+	 * when the recipe class is shared across many handler categories.
+	 */
+	public void addRecipe(@Nullable Object recipe, @Nullable String recipeCategoryUid) {
+		if (recipe == null) {
+			Log.error("Null recipe", new NullPointerException());
+			return;
+		}
+		if (recipeCategoryUid == null) {
+			addRecipe(recipe);
+			return;
+		}
+
+		IRecipeCategory recipeCategory = recipeCategoriesMap.get(recipeCategoryUid);
+		if (recipeCategory == null) {
+			Log.error("No recipe category registered for recipeCategoryUid: {}", recipeCategoryUid);
+			return;
+		}
+
+		IRecipeHandler recipeHandler = getRecipeHandler(recipe.getClass());
+		if (recipeHandler == null) {
+			Log.debug("Can't handle recipe: {}", recipe.getClass());
+			return;
+		}
+
+		if (!recipeHandler.isRecipeValid(recipe)) {
+			return;
+		}
+
+		try {
+			addRecipeUnchecked(recipe, recipeCategory, recipeHandler);
+		} catch (RuntimeException e) {
+			String recipeInfo = getInfoFromBrokenRecipe(recipe, recipeHandler);
+			Log.error("Failed to add recipe: {}", recipeInfo, e);
+		}
+	}
+
+	public synchronized void addRecipeCategory(@Nullable IRecipeCategory recipeCategory) {
+		if (recipeCategory == null || recipeCategory.getUid() == null) {
+			return;
+		}
+		if (!recipeCategoriesMap.containsKey(recipeCategory.getUid())) {
+			recipeCategoriesMap.put(recipeCategory.getUid(), recipeCategory);
+			recipeCategoryComparator.addCategory(recipeCategory);
+		}
+	}
+
+	public synchronized void addRecipeHandler(@Nullable IRecipeHandler recipeHandler) {
+		if (recipeHandler == null) {
+			return;
+		}
+		Class recipeClass = recipeHandler.getRecipeClass();
+		if (recipeClass == null) {
+			return;
+		}
+		if (!recipeHandlers.containsKey(recipeClass)) {
+			recipeHandlers.put(recipeClass, recipeHandler);
 		}
 	}
 

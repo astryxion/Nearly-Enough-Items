@@ -5,7 +5,6 @@ import java.util.Map;
 
 import net.minecraft.item.Item;
 
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -73,13 +72,7 @@ public class NearlyEnoughItems {
 
 	@Mod.EventHandler
 	public void startNEI(@Nonnull FMLModIdMappingEvent event) {
-		// FMLModIdMappingEvent is delivered on the server thread during integrated load.
-		// Item/recipe registration must run on the client thread (GUI + client registries).
-		if (FMLCommonHandler.instance().getSide() == Side.CLIENT) {
-			proxy.startNEI();
-			return;
-		}
-
-		proxy.scheduleStartNEI();
+		// Do not start JEI here. Remap fires during world load on the integrated
+		// server; scheduling onto the client thread blocks FML handshake.
 	}
 }

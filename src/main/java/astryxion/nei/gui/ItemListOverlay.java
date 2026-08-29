@@ -76,7 +76,9 @@ public class ItemListOverlay implements IShowsRecipeFocuses, IMouseHandler, IKey
 
 	// properties of the gui we're beside
 	private int guiLeft;
+	private int guiTop;
 	private int guiXSize;
+	private int guiYSize;
 	private int screenWidth;
 	private int screenHeight;
 
@@ -89,7 +91,9 @@ public class ItemListOverlay implements IShowsRecipeFocuses, IMouseHandler, IKey
 
 	public void initGui(@Nonnull GuiContainer guiContainer) {
 		this.guiLeft = guiContainer.guiLeft;
+		this.guiTop = guiContainer.guiTop;
 		this.guiXSize = guiContainer.xSize;
+		this.guiYSize = guiContainer.ySize;
 		this.screenWidth = guiContainer.width;
 		this.screenHeight = guiContainer.height;
 
@@ -124,16 +128,24 @@ public class ItemListOverlay implements IShowsRecipeFocuses, IMouseHandler, IKey
 		backButton = new GuiButtonExt(1, leftEdge, borderPadding, backButtonWidth, buttonHeight, back);
 
 		int configButtonSize = searchHeight + 4;
-		int configButtonX = rightEdge - configButtonSize + 1;
+		int searchFieldY = screenHeight - searchHeight - borderPadding - 2;
+		final int searchFieldX;
+		final int searchFieldWidth;
+		if (isSearchBarCentered()) {
+			searchFieldX = guiLeft;
+			searchFieldWidth = guiXSize - configButtonSize - 1;
+		} else {
+			searchFieldX = leftEdge;
+			searchFieldWidth = rightEdge - leftEdge - configButtonSize - 1;
+		}
+		searchField = new GuiTextFieldFilter(0, fontRenderer, searchFieldX, searchFieldY, searchFieldWidth, searchHeight);
+
+		int configButtonX = searchFieldX + searchFieldWidth + 1;
 		int configButtonY = screenHeight - configButtonSize - borderPadding;
 		configButton = new GuiButtonExt(2, configButtonX, configButtonY, configButtonSize, configButtonSize, null);
 		ResourceLocation configButtonIconLocation = new ResourceLocation(Constants.RESOURCE_DOMAIN, Constants.TEXTURE_GUI_PATH + "recipeBackground.png");
 		configButtonIcon = Internal.getHelpers().getGuiHelper().createDrawable(configButtonIconLocation, 0, 166, 16, 16);
 		configButtonHoverChecker = new HoverChecker(configButton, 0);
-
-		int searchFieldY = screenHeight - searchHeight - borderPadding - 2;
-		int searchFieldWidth = rightEdge - leftEdge - configButtonSize - 1;
-		searchField = new GuiTextFieldFilter(0, fontRenderer, leftEdge, searchFieldY, searchFieldWidth, searchHeight);
 		setKeyboardFocus(false);
 		searchField.setItemFilter(itemFilter);
 
@@ -143,7 +155,7 @@ public class ItemListOverlay implements IShowsRecipeFocuses, IMouseHandler, IKey
 	}
 
 	public void updateGui(@Nonnull GuiContainer guiContainer) {
-		if (this.guiLeft != guiContainer.guiLeft || this.guiXSize != guiContainer.xSize || this.screenWidth != guiContainer.width || this.screenHeight != guiContainer.height) {
+		if (this.guiLeft != guiContainer.guiLeft || this.guiTop != guiContainer.guiTop || this.guiXSize != guiContainer.xSize || this.guiYSize != guiContainer.ySize || this.screenWidth != guiContainer.width || this.screenHeight != guiContainer.height) {
 			initGui(guiContainer);
 		}
 	}
@@ -257,7 +269,15 @@ public class ItemListOverlay implements IShowsRecipeFocuses, IMouseHandler, IKey
 
 	@Override
 	public boolean isMouseOver(int mouseX, int mouseY) {
-		return isOpen() && (mouseX >= guiLeft + guiXSize);
+		if (!isOpen()) {
+			return false;
+		}
+		if (mouseX >= guiLeft + guiXSize) {
+			return true;
+		}
+		return isSearchBarCentered() && (
+				(searchField != null && searchField.isMouseOver(mouseX, mouseY))
+				|| (configButtonHoverChecker != null && configButtonHoverChecker.checkHover(mouseX, mouseY)));
 	}
 
 	@Override
@@ -380,7 +400,14 @@ public class ItemListOverlay implements IShowsRecipeFocuses, IMouseHandler, IKey
 	}
 
 	private int getItemButtonYSpace() {
+		if (isSearchBarCentered()) {
+			return screenHeight - (buttonHeight + (3 * borderPadding));
+		}
 		return screenHeight - (buttonHeight + searchHeight + 2 + (4 * borderPadding));
+	}
+
+	private boolean isSearchBarCentered() {
+		return Config.isCenterSearchBarEnabled() && guiTop + guiYSize + searchHeight < screenHeight;
 	}
 
 	private int getColumns() {

@@ -30,6 +30,7 @@ import astryxion.nei.gui.ItemListOverlay;
 import astryxion.nei.gui.RecipesGui;
 import astryxion.nei.input.InputHandler;
 import astryxion.nei.util.Log;
+import codechicken.nei.bridge.NeiRecipeBridge;
 
 public class GuiEventHandler {
 
@@ -40,11 +41,28 @@ public class GuiEventHandler {
 	@Nullable
 	private InputHandler inputHandler;
 
+	public GuiEventHandler() {
+		NeiRecipeBridge.setRecipesGui(recipesGui);
+	}
+
 	private final boolean[] mouseButtonDown = new boolean[3];
 	private int lastMouseWheel;
+	private int ticksInWorld;
 
 	private void ensureNeiStarted() {
 		if (Internal.getRecipeRegistry() != null) {
+			return;
+		}
+		Minecraft minecraft = Minecraft.getMinecraft();
+		if (minecraft == null || minecraft.thePlayer == null || minecraft.theWorld == null) {
+			ticksInWorld = 0;
+			return;
+		}
+		if (minecraft.thePlayer.sendQueue == null) {
+			return;
+		}
+		ticksInWorld++;
+		if (ticksInWorld < 10) {
 			return;
 		}
 		NearlyEnoughItems.getProxy().startNEI();
@@ -60,11 +78,11 @@ public class GuiEventHandler {
 		if (this.recipesGui.isOpen()) {
 			this.recipesGui.close();
 		}
+		jeiCapturedMouse = false;
 	}
 
 	@SubscribeEvent
 	public void onGuiInit(@Nonnull GuiScreenEvent.InitGuiEvent.Post event) {
-		ensureNeiStarted();
 		if (itemListOverlay == null) {
 			return;
 		}
@@ -90,8 +108,10 @@ public class GuiEventHandler {
 				itemListOverlay.close();
 			}
 			recipesGui.close();
+			jeiCapturedMouse = false;
 		} else if (!(event.gui instanceof GuiContainer)) {
 			recipesGui.close();
+			jeiCapturedMouse = false;
 		}
 	}
 
@@ -132,7 +152,6 @@ public class GuiEventHandler {
 		itemListOverlay.drawHovered(guiContainer.mc, event.mouseX, event.mouseY);
 
 		ensureInputHandler(guiContainer);
-		handleDrawScreenMouseInput(event.mouseX, event.mouseY);
 
 		if (!recipesGui.isOpen()) {
 			/**
@@ -149,6 +168,9 @@ public class GuiEventHandler {
 
 	@SubscribeEvent
 	public void onClientTick(@Nonnull TickEvent.ClientTickEvent event) {
+		if (event.phase == TickEvent.Phase.START) {
+			ensureNeiStarted();
+		}
 		if (itemListOverlay == null) {
 			return;
 		}
@@ -167,6 +189,7 @@ public class GuiEventHandler {
 			if (inputHandler != null) {
 				inputHandler.handleGuiKeyboardEarly();
 			}
+			handleGuiMouseEarly(guiContainer);
 			handleCtrlFFocus();
 			return;
 		}
@@ -240,26 +263,48 @@ public class GuiEventHandler {
 		}
 	}
 
-	private void handleDrawScreenMouseInput(int mouseX, int mouseY) {
-		if (inputHandler == null) {
+	private boolean jeiCapturedMouse;
+
+	/**
+	 * 1.7.10 has no GuiScreenEvent.MouseInputEvent. Drain the mouse queue before
+	 * GuiScreen.handleInput so clicks on the JEI overlay are not treated as
+	 * "clicked outside the inventory" (which throws the cursor item into the world).
+	 */
+	private void handleGuiMouseEarly(GuiScreen gui) {
+		if (inputHandler == null || !Mouse.isCreated()) {
 			return;
 		}
 
-		for (int button = 0; button < mouseButtonDown.length; button++) {
-			boolean down = Mouse.isButtonDown(button);
-			if (down && !mouseButtonDown[button]) {
-				inputHandler.onMouseClicked(button, mouseX, mouseY);
-			} else if (!down && mouseButtonDown[button]) {
-				inputHandler.onMouseReleased(button);
-			}
-			mouseButtonDown[button] = down;
-		}
+		Minecraft mc = Minecraft.getMinecraft();
+		while (Mouse.next()) {
+			int mouseX = Mouse.getEventX() * gui.width / mc.displayWidth;
+			int mouseY = gui.height - Mouse.getEventY() * gui.height / mc.displayHeight - 1;
+			int button = Mouse.getEventButton();
+			boolean pressed = Mouse.getEventButtonState();
+			int wheel = Mouse.getEventDWheel();
 
-		int wheel = Mouse.getDWheel();
-		if (wheel != 0 && wheel != lastMouseWheel) {
-			inputHandler.onMouseScrolled(wheel, mouseX, mouseY);
+			if (button >= 0 && pressed) {
+				if (inputHandler.captureMousePress(button, mouseX, mouseY)) {
+					jeiCapturedMouse = true;
+					continue;
+				}
+				jeiCapturedMouse = false;
+			} else if (button >= 0 && !pressed) {
+				inputHandler.onMouseReleased(button);
+				if (jeiCapturedMouse) {
+					jeiCapturedMouse = false;
+					continue;
+				}
+			} else if (wheel != 0) {
+				if (inputHandler.onMouseScrolled(wheel, mouseX, mouseY)) {
+					continue;
+				}
+			} else if (jeiCapturedMouse) {
+				continue;
+			}
+
+			gui.handleMouseInput();
 		}
-		lastMouseWheel = wheel;
 	}
 
 	private static int[] getScaledMousePosition(Minecraft minecraft, int eventX, int eventY) {

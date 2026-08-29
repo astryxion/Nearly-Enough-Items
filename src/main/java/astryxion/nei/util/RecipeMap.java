@@ -103,11 +103,16 @@ public class RecipeMap {
 		Map<String, List<Object>> recipesForType = recipeTable.row(recipeCategory);
 
 		for (ItemStack itemStack : itemStacks) {
-			if (itemStack == null) {
+			if (itemStack == null || itemStack.getItem() == null) {
 				continue;
 			}
 
-			String stackKey = StackUtil.getUniqueIdentifierForStack(itemStack);
+			String stackKey;
+			try {
+				stackKey = StackUtil.getUniqueIdentifierForStack(itemStack);
+			} catch (Throwable t) {
+				continue;
+			}
 			List<Object> recipes = recipesForType.get(stackKey);
 			if (recipes == null) {
 				recipes = Lists.newArrayList();
